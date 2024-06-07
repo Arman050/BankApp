@@ -1,0 +1,130 @@
+﻿@page "/ArmBanking"
+@using BankApp.Models
+@using BankApp.SQL
+@inject DATABASEBank DATABASEBank
+
+
+<h3>Bienvenu(e) sur ArmBanking</h3>
+
+<p></p>
+<p></p>
+<p></p>
+
+<p>Création d'un compte bancaire...</p>
+
+<p></p>
+<p></p>
+<p></p>
+
+<div class="form-group">
+    <label>Nom</label>
+    <input type="text" @bind="Name" class="form-control" placeholder="Nom" />
+</div>
+
+<div class="form-group">
+    <label>Prenom</label>
+    <input type="text" @bind="FirstName" class="form-control" placeholder="Prenom" />
+</div>
+    
+<div class="form-group">
+    <label>Date de naissance</label>
+    <input type="date" @bind="DateNaiss" class="form-control" />
+</div>
+
+
+<button @onclick="CréerCompte">Créer un compte</button>
+<button @onclick="() => EffectuerDepot(100)">Déposer 100</button>
+<button @onclick="() => EffectuerRetrait(200)">Retirer 200</button>
+
+<p>Solde actuel: @compte1.GetSolde()</p>
+
+<p></p>
+<p></p>
+<p></p>
+
+@if (compte1 != null && compte1.Titulaire != null)
+{
+    <p>Nom : @compte1.Titulaire.Nom</p>
+    <p>Prénom : @compte1.Titulaire.Prenom</p>
+    <p>Numéro de compte : @compte1.Numero</p>
+}
+
+
+@code 
+{
+
+    string connectionString = @"server=DESKTOP-F4NNU4B\ARAV;database=ARMBANKING;integrated security=true";
+
+    private string _Name;
+    private string _FirstName;
+    private DateTime _DateNaiss;
+
+    public string Name
+    {
+        get
+        {
+            return _Name;
+        }
+        set
+        {
+            _Name = value;
+        }
+    }
+
+    public string FirstName
+    {
+        get
+        {
+            return _FirstName;
+        }
+        set
+        {
+            _FirstName = value;
+        }
+    }
+
+    public DateTime DateNaiss
+    {
+        get
+        {
+            return _DateNaiss;
+        }
+        set
+        {
+            _DateNaiss = value;
+        }
+    }
+
+
+    Personne titulaire = new();
+
+    Courant compte1 = new();
+
+    void CréerCompte()
+    {
+        compte1.Titulaire = new Personne
+            {
+                Nom = Name,
+                Prenom = FirstName,
+                DateNaiss = DateNaiss
+            };
+        compte1.LigneDeCredit = 1000;
+        compte1.Numero = "BE47 4587 4123 0258";
+    }
+
+    void EffectuerDepot(double montant)
+    {
+        compte1.Depot(montant);
+    }
+
+    // Méthode pour effectuer le retrait
+    void EffectuerRetrait(double montant)
+    {
+        compte1.Retrait(montant);
+    }
+
+    void EffectuerLignedecredit(double montant)
+    {
+        compte1.Retrait(montant);
+    }
+}
